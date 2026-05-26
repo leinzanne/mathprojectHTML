@@ -403,7 +403,7 @@ body {
     display: flex;
     flex-direction: row;
     gap: 40px;
-    margin: 100px 80px 80px;
+    margin: 80px 80px 10px;
 }
 
 .dropdown-box {

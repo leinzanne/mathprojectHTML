@@ -51,12 +51,10 @@ body {
 
 .hovering-bar {
     display: flex;
-    /* pone todo en fila */
     align-items: center;
-    /* centra verticalmente */
     justify-content: space-between;
-    height: 10%;
-    padding: 32px 60px;
+    height: 14%;
+    padding: 0 80px;
     width: 100%;
     position: fixed;
     top: 0;
@@ -83,10 +81,11 @@ body {
 .bar-logo {
     display: inline-block;
     background: #d4d3eb;
-    border-radius: 6px;
+    border-radius: 8px;
     color: #53aa40;
     font-weight: 900;
-    padding: 2px 8px;
+    font-size: 140%;
+    padding: 4px 12px;
     text-decoration: none;
 }
 
@@ -102,6 +101,7 @@ body {
     display: block;
     padding: 0 12px;
     font-weight: 700;
+    font-size: 150%;
     letter-spacing: 1.5px;
     text-transform: uppercase;
     color: #111;
@@ -118,31 +118,13 @@ body {
     align-items: center;
     gap: 16px;
     font-weight: 700;
+    font-size: 150%;
     letter-spacing: 1.5px;
     text-transform: uppercase;
 }
 
 .linkbar-right a {
     text-decoration: none;
-}
-
-.not-index .hovering-bar {
-    height: 14%;
-    padding: 0 80px;
-}
-
-.not-index .bar-logo {
-    font-size: 140%;
-    padding: 4px 12px;
-    border-radius: 8px;
-}
-
-.not-index .linkbar a {
-    font-size: 150%;
-}
-
-.not-index .linkbar-right {
-    font-size: 150%;
 }
 
 .about-us {
@@ -185,7 +167,9 @@ body {
 .topics-grid {
     display: grid;
     grid-template-columns: repeat(2, minmax(0, 1fr));
-    max-width: 1280px;
+    max-width: 1100px;
+    gap: 16px;
+    margin-bottom: 120px;
     align-items: center;
     justify-content: center;
 }
@@ -199,49 +183,26 @@ body {
     border: 1px solid rgb(42, 42, 42);
     border-radius: 24px;
     margin: 4px;
-    width: 320px;
-    height: 190px;
+    width: 400px;
+    height: 260px;
     transition: all 0.3s ease;
     backdrop-filter: blur(6px);
 }
 
 .topics-card h3 {
     font-weight: 800;
+    font-size: 1.7rem;
+    text-align: center;
     margin: 0;
 }
 
-.topics-card img {
-    margin-top: 8px;
-    width: auto;
-    height: 120px;
-    object-fit: cover;
-    border-radius: 12px;
-}
-
-.not-index .topics-grid {
-    max-width: 1100px;
-    gap: 16px;
-    margin-bottom: 120px;
-}
-
-.not-index .topics-card {
-    width: 400px;
-    height: 260px;
-}
-
-.not-index .topics-card h3 {
-    font-size: 1.7rem;
-    text-align: center;
-    justify-content: center;
-}
-
-.not-index .topics-card p {
+.topics-card p {
     font-size: 1.2rem;
     text-align: center;
     justify-content: center;
 }
 
-.not-index .topics-card img {
+.topics-card img {
     margin-top: 8px;
     width: auto;
     height: 180px;
@@ -390,7 +351,7 @@ body {
     margin-bottom: 80px;
 }
 
-.degradado-2-T  {
+.degradado-2-T {
     background: linear-gradient(to right, #5290f3, #2bf96c);
     background-clip: text;
     -webkit-background-clip: text;
@@ -408,7 +369,7 @@ body {
 }
 
 .texto a {
-    transition: all 0.1s ease
+    transition: all 0.1s ease;
 }
 
 .texto a:hover {
@@ -492,7 +453,6 @@ h1,
 h2 {
     font-weight: 900;
     color: #3e60b8;
-
 }
 
 .card {
@@ -585,34 +545,34 @@ h2 {
 
 #anuncio-1 {
     width: 650px;
-  position: fixed;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  padding: 20px;
-  z-index: 1000;
-  opacity: 0;
-  pointer-events: none;
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    padding: 20px;
+    z-index: 1000;
+    opacity: 0;
+    pointer-events: none;
 }
 
 #anuncio-1 img {
-  width: 650px;   /* cambia este valor a tu gusto */
-  height: auto;   /* mantiene proporciones */
+    width: 650px;
+    height: auto;
 }
 
 #equis {
-  position: absolute;  /* se posiciona relativo al div padre */
-  top: 8px;
-  right: 8px;
-  background: none;
-  border: none;
-  font-size: 1.5rem;
-  cursor: pointer;
-  color: #5f5f5f;
+    position: absolute;
+    top: 8px;
+    right: 8px;
+    background: none;
+    border: none;
+    font-size: 1.5rem;
+    cursor: pointer;
+    color: #5f5f5f;
 }
 
 #anuncio-1 .contenedor {
-  position: relative;
+    position: relative;
 }
 
 div[id^="video-"] {

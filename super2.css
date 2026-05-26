@@ -133,6 +133,7 @@ body {
     align-items: center;
     gap: 30px;
     width: 800px;
+    margin-bottom: 60px;
 }
 
 .about-us-img {

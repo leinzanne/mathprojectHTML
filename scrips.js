@@ -92,7 +92,11 @@ document.querySelectorAll('a[href^="#video-"]').forEach(link => {
 
 if (videoOverlay) {
     videoOverlay.addEventListener('click', () => {
-        document.querySelectorAll('div[id^="video-"]').forEach(v => v.classList.remove('is-visible'));
+        document.querySelectorAll('div[id^="video-"]').forEach(v => {
+            v.classList.remove('is-visible');
+            const iframe = v.querySelector('iframe');
+            if (iframe) iframe.src = iframe.src;
+        });
         videoOverlay.classList.remove('is-visible');
         document.body.style.overflow = '';
     });

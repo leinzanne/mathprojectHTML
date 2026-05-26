@@ -57,12 +57,14 @@ if (overlay) {
 // Open modal matching the card's href
 document.querySelectorAll('.clickable-region').forEach(link => {
     link.addEventListener('click', (e) => {
-        e.preventDefault();
         const targetId = link.getAttribute('href').slice(1);
         const modal = document.getElementById(targetId);
-        if (modal) modal.classList.add('is-visible');
-        overlay.classList.add('is-visible');
-        document.body.style.overflow = 'hidden';
+        if (modal) {
+            e.preventDefault();
+            modal.classList.add('is-visible');
+            if (overlay) overlay.classList.add('is-visible');
+            document.body.style.overflow = 'hidden';
+        }
     });
 });
 

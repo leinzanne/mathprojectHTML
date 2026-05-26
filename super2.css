@@ -398,6 +398,48 @@ body {
     text-align: center;
 }
 
+.dropdown-markup {
+    display: flex;
+    flex-direction: row;
+    gap: 40px;
+    margin: 80px 0 80px 0;
+}
+
+.dropdown-box {
+    display: inline-block;
+}
+
+.dropdown-heading {
+    position: relative;
+    cursor: pointer;
+    margin: 0;
+    padding: 0 20px;
+    height: fit-content;
+    padding-bottom: 16px;
+    border-bottom: 1px solid grey;
+}
+
+.dropdown-heading h3 {
+    display: flex;
+    justify-content: space-between;
+    width: 100%;
+    align-items: center;
+}
+
+.dropdown-text {
+    position: relative;
+    margin: 0;
+    height: fit-content;
+    padding-top: 16px;
+    max-height: 0;
+    overflow: hidden;
+    transition: all 0.5s ease;
+}
+
+.dropdown-text.open {
+    max-height: 400px;
+}
+
 .imagen-boton {
     transition: transform 0.2s ease;
     cursor: pointer;
@@ -447,6 +489,31 @@ h1,
 h2 {
     font-weight: 900;
     color: #3e60b8;
+}
+
+.transformaciones-table {
+    border-collapse: collapse;
+    width: 100%;
+    margin-top: 20px;
+    color: #f3f4f6;
+    font-size: 1.1rem;
+}
+
+.transformaciones-table th,
+.transformaciones-table td {
+    border: 1px solid rgba(96, 165, 250, 0.3);
+    padding: 10px 20px;
+    text-align: center;
+}
+
+.transformaciones-table th {
+    background: rgba(96, 165, 250, 0.15);
+    font-weight: 700;
+    color: rgb(96, 165, 250);
+}
+
+.transformaciones-table tr:hover td {
+    background: rgba(96, 165, 250, 0.05);
 }
 
 .card {

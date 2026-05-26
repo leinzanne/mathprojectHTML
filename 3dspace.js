@@ -619,6 +619,7 @@
           isScrubbing = false;
           inp.style.cursor = '';
           document.body.style.cursor = '';
+          document.exitPointerLock();
         }
 
         function resetCoordinate(e) {
@@ -646,18 +647,26 @@
           if (document.activeElement === inp) return;
           e.preventDefault(); 
           dragging = true; 
-          isScrubbing = true; // Lock the 3D space and Sidebar
-          startX = e.clientX; 
+          isScrubbing = true;
           startVal = parseFloat(inp.value) || 0;
           inp.style.cursor = 'ew-resize';
-          document.body.style.cursor = 'ew-resize'; 
+          document.body.style.cursor = 'ew-resize';
+          inp.requestPointerLock();
         });
         window.addEventListener('mousemove', e => {
           if (!dragging) return;
-          const dx = e.clientX - startX;
-          let v = parseFloat((startVal + dx * 0.02).toFixed(2));
+          startVal += e.movementX * 0.02;
+          const v = parseFloat(startVal.toFixed(2));
           inp.value = v.toFixed(2);
           pt[axis] = v;
+        });
+        window.addEventListener('mouseup', () => { 
+          if (!dragging) return; 
+          stopScrub();
+          document.exitPointerLock();
+          if (!isTabHovered) {
+          tab.classList.remove('open');
+          }
         });
         window.addEventListener('mouseup', () => { 
           if (!dragging) return; 

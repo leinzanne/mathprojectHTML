@@ -101,3 +101,10 @@ if (videoOverlay) {
 if (location.hash) {
     history.replaceState(null, '', location.pathname);
 }
+
+document.querySelectorAll('.dropdown-heading').forEach(heading => {
+    heading.addEventListener('click', () => {
+        const text = heading.nextElementSibling;
+        text.classList.toggle('open');
+    });
+});

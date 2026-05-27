@@ -335,12 +335,12 @@
     const cx = w / 2 + px;
     const cy = h / 2 - py;
 
-    const ax = drawPivX * r;
-    const ay = -drawPivY * r;
+    const ax = drawPivX * baseR;
+    const ay = -drawPivY * baseR;
 
     // ── DRAW SHAPE ──
     ctx.save();
-    ctx.translate(cx, cy); 
+    ctx.translate(cx, cy);
     ctx.translate(ax, ay); 
     ctx.rotate(drawRot * Math.PI / 180);
     ctx.scale(drawFlipH * (drawScale < 0 ? -1 : 1), drawFlipV);
@@ -411,11 +411,21 @@
       const realCy = h / 2 - realPy;
       
       const realR  = baseR * Math.abs(STATE.scale);
-      const realAx = STATE.pivX * realR;
-      const realAy = -STATE.pivY * realR;
+      const realAx = STATE.pivX * baseR;
+      const realAy = -STATE.pivY * baseR;
+
+      const flipX = STATE.flipH * (STATE.scale < 0 ? -1 : 1);
+      const flipY = STATE.flipV;
+      const rotRad = STATE.rotation * Math.PI / 180;
+
+      const x_rot = (-realAx * flipX) * Math.cos(rotRad) - (-realAy * flipY) * Math.sin(rotRad);
+      const y_rot = (-realAx * flipX) * Math.sin(rotRad) + (-realAy * flipY) * Math.cos(rotRad);
+
+      const targetCx = realCx + realAx + x_rot;
+      const targetCy = realCy + realAy + y_rot;
 
       ctx.save();
-      ctx.translate(realCx, realCy);
+      ctx.translate(targetCx, targetCy); 
       
       ctx.fillStyle = '#ff1a1a';
       ctx.fillRect(-3, -3, 6, 6);

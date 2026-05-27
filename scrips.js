@@ -112,3 +112,26 @@ document.querySelectorAll('.dropdown-heading').forEach(heading => {
         text.classList.toggle('open');
     });
 });
+
+document.addEventListener('keydown', (event) => {
+    if (event.key === 'Escape') {
+        if (videoOverlay && videoOverlay.classList.contains('is-visible')) {
+            document.querySelectorAll('div[id^="video-"]').forEach(v => {
+                v.classList.remove('is-visible');
+                const iframe = v.querySelector('iframe');
+                if (iframe) iframe.src = iframe.src;
+            });
+            videoOverlay.classList.remove('is-visible');
+            document.body.style.overflow = '';
+        }
+
+        if (overlay && overlay.classList.contains('is-visible')) {
+            document.querySelectorAll('.massive-popup').forEach(modal => {
+                modal.classList.remove('is-visible');
+            });
+            overlay.classList.remove('is-visible');
+            document.body.style.overflow = '';
+            history.replaceState(null, '', location.pathname);
+        }
+    }
+});

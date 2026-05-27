@@ -202,6 +202,7 @@
       cursor: pointer; font-size: 13px;
     }
     .insp-flip-btn:hover { background: #484848; }
+    .insp-flip-btn.active { background: #4a3a2a; border-color: #e07060; color: #e07060; }
 
     /* ROW RESET */
     .insp-row-reset { color: #555; cursor: pointer; flex-shrink: 0; display: flex; align-items: center; border-radius: 3px; padding: 2px; }
@@ -342,7 +343,7 @@
     ctx.translate(cx, cy); 
     ctx.translate(ax, ay); 
     ctx.rotate(drawRot * Math.PI / 180);
-    ctx.scale(drawFlipH, drawFlipV); 
+    ctx.scale(drawFlipH * (drawScale < 0 ? -1 : 1), drawFlipV);
     ctx.translate(-ax, -ay);
 
     const pathRadius = baseR * drawScale; 
@@ -996,9 +997,21 @@
       }
     }
 
-    // When an image is loaded via drag-drop from canvas area, refresh rows
+    // When an image is loaded via drag-drop from canvas area, refresh rows + expand NGon
+    let _prevHasImage = false;
     addUpdater(() => {
       refreshColorRows();
+      const hasImage = !!STATE.importedImage;
+      if (hasImage && !_prevHasImage) {
+        // Image just appeared — expand the NGon section
+        const content = inner.closest('.insp-section')?.querySelector('.insp-section-content');
+        const nameEl  = inner.closest('.insp-section')?.querySelector('.insp-section-name');
+        if (content && !content.classList.contains('open')) {
+          content.classList.add('open');
+          if (nameEl) nameEl.classList.add('open');
+        }
+      }
+      _prevHasImage = hasImage;
     });
 
     const opSlider = makeSliderWithDot({
@@ -1079,10 +1092,15 @@
 
     const flipWrap = el('div', 'insp-xy');
     const fh = el('button', 'insp-flip-btn'); fh.textContent = '⇔';
-    fh.addEventListener('click', () => { STATE.flipH *= -1; redraw(); });
+    fh.addEventListener('click', () => { STATE.flipH *= -1; syncUI(); redraw(); });
 
     const fv = el('button', 'insp-flip-btn'); fv.textContent = '⇕';
-    fv.addEventListener('click', () => { STATE.flipV *= -1; redraw(); });
+    fv.addEventListener('click', () => { STATE.flipV *= -1; syncUI(); redraw(); });
+
+    addUpdater(() => {
+      fh.classList.toggle('active', STATE.flipH === -1);
+      fv.classList.toggle('active', STATE.flipV === -1);
+    });
     
     flipWrap.append(fh, fv);
     
@@ -1217,7 +1235,7 @@
     setupDragDrop(area);
 
     requestAnimationFrame(init);
-    return area;
+    return { areaEl: area, setupDragDrop };
   }
 
   function buildTopBar() {
@@ -1238,7 +1256,8 @@
     shell.appendChild(buildTopBar());
 
     const bodyRow = el('div', 'insp-body-row');
-    bodyRow.appendChild(buildCanvasArea());
+    const { areaEl, setupDragDrop } = buildCanvasArea();
+    bodyRow.appendChild(areaEl);
 
     const panel = el('div', 'insp-panel');
     const panelHeader = el('div', 'insp-panel-header');
@@ -1270,6 +1289,7 @@
     panel.append(panelHeader, scroll);
     bodyRow.appendChild(panel); shell.appendChild(bodyRow);
     target.appendChild(shell);
+    setupDragDrop(shell);
   }
 
   if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', () => mount('#davinciresolve-mount'));

@@ -487,20 +487,28 @@
     inp.type = 'number';
     inp.value = opts.value().toFixed(opts.decimals ?? 0);
 
-    let dragging = false, startX = 0, startVal = 0;
+    let dragging = false, maybeDragging = false, startX = 0, startVal = 0;
 
     inp.addEventListener('mousedown', e => {
       if (document.activeElement === inp) return;
-      e.preventDefault();
-      dragging = true;
+      maybeDragging = true;
+      startX = e.clientX;
       startVal = opts.value();
-      startX = 0; // reset — we'll use movementX instead
-      inp.style.cursor = 'ew-resize';
-      inp.requestPointerLock();
     });
 
     window.addEventListener('mousemove', e => {
+      if (maybeDragging && !dragging) {
+        if (Math.abs(e.clientX - startX) > 3) {
+          dragging = true;
+          inp.style.cursor = 'ew-resize';
+          inp.requestPointerLock();
+        }
+      }
+      
       if (!dragging) return;
+      
+      if (Math.abs(e.movementX) > 50) return;
+      
       const speed = opts.dragSpeed ?? (opts.step || 1);
       startVal += e.movementX * speed;
 
@@ -508,16 +516,17 @@
       if (opts.min !== undefined) newVal = Math.max(opts.min, newVal);
       if (opts.max !== undefined) newVal = Math.min(opts.max, newVal);
 
-      startVal = newVal; // keep startVal in sync so it doesn't drift past limits
+      startVal = newVal; 
       inp.value = newVal.toFixed(opts.decimals ?? 0);
       opts.onChange && opts.onChange(newVal);
     });
 
     window.addEventListener('mouseup', () => {
+      maybeDragging = false;
       if (!dragging) return;
       dragging = false;
       inp.style.cursor = '';
-      document.exitPointerLock();
+      if (document.pointerLockElement) document.exitPointerLock();
     });
 
     // Double-click → focus for typing; validate on blur/Enter
@@ -527,6 +536,7 @@
       editingMode = true;
       inp.readOnly = false;
       inp.style.cursor = 'text';
+      inp.focus();
       inp.select();
     });
 

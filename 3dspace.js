@@ -611,15 +611,16 @@
         const initialVal = pt[axis];
 
         // Scrub: drag left/right to change value
-        let dragging = false, startX = 0, startVal = 0;
+        let dragging = false, maybeDragging = false, startX = 0, startVal = 0;
         let editing = false;
 
         function stopScrub() {
           dragging = false;
+          maybeDragging = false;
           isScrubbing = false;
           inp.style.cursor = '';
           document.body.style.cursor = '';
-          document.exitPointerLock();
+          if (document.pointerLockElement) document.exitPointerLock();
         }
 
         function resetCoordinate(e) {
@@ -629,46 +630,45 @@
           stopScrub();
           pt[axis] = initialVal;
           inp.value = initialVal.toFixed(2);
-          // No inp.blur() — that fires commit() which can race and overwrite the reset value
         }
 
-        // Reset Button
         const resetBtn = document.createElement('button'); 
         resetBtn.className = 'ax3-point-reset';
         resetBtn.type = 'button';
         resetBtn.innerHTML = RESET_SVG;
         resetBtn.title = 'Reset to initial value';
-        // mousedown only — preventDefault inside resetCoordinate suppresses the click event,
-        // so registering on both mousedown AND click causes double-firing in some browsers.
         resetBtn.addEventListener('mousedown', resetCoordinate);
 
         inp.addEventListener('mousedown', e => {
           e.stopPropagation();
           if (document.activeElement === inp) return;
-          e.preventDefault(); 
-          dragging = true; 
-          isScrubbing = true;
+          maybeDragging = true; 
+          startX = e.clientX;
           startVal = parseFloat(inp.value) || 0;
-          inp.style.cursor = 'ew-resize';
-          document.body.style.cursor = 'ew-resize';
-          inp.requestPointerLock();
         });
+
         window.addEventListener('mousemove', e => {
+          if (maybeDragging && !dragging) {
+             if (Math.abs(e.clientX - startX) > 3) {
+                 dragging = true;
+                 isScrubbing = true;
+                 inp.style.cursor = 'ew-resize';
+                 document.body.style.cursor = 'ew-resize';
+                 inp.requestPointerLock(); 
+             }
+          }
           if (!dragging) return;
+
+          if (Math.abs(e.movementX) > 50) return;
+          
           startVal += e.movementX * 0.02;
           const v = parseFloat(startVal.toFixed(2));
           inp.value = v.toFixed(2);
           pt[axis] = v;
         });
+
         window.addEventListener('mouseup', () => { 
-          if (!dragging) return; 
-          stopScrub();
-          document.exitPointerLock();
-          if (!isTabHovered) {
-          tab.classList.remove('open');
-          }
-        });
-        window.addEventListener('mouseup', () => { 
+          maybeDragging = false;
           if (!dragging) return; 
           stopScrub();
           
@@ -678,7 +678,13 @@
         });
 
         // Double-click to type
-        inp.addEventListener('dblclick', e => { e.stopPropagation(); editing = true; inp.style.cursor = 'text'; inp.select(); });
+        inp.addEventListener('dblclick', e => { 
+          e.stopPropagation(); 
+          editing = true; 
+          inp.style.cursor = 'text'; 
+          inp.focus();
+          inp.select(); 
+        });
         function commit() {
           if (!editing) return; editing = false; inp.style.cursor = '';
           const v = parseFloat(inp.value);

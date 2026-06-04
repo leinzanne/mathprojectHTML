@@ -143,6 +143,7 @@ body {
     border: 4px solid rgb(112, 163, 245);
     border-radius: 12px;
     flex-shrink: 0;
+    margin: 0 !important;
     transition: transform 0.2s ease;
     cursor: pointer;
 }

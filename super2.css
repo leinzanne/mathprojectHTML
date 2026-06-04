@@ -136,13 +136,19 @@ body {
     margin-bottom: 60px;
 }
 
-.about-us-img {
+.about-us img {
     display: block;
     width: 320px;
     height: auto;
-    border: 2px solid rgb(112, 163, 245);
+    border: 4px solid rgb(112, 163, 245);
     border-radius: 12px;
     flex-shrink: 0;
+    transition: transform 0.2s ease;
+    cursor: pointer;
+}
+
+.about-us img:hover {
+    transform: scale(1.07);
 }
 
 .about-us-text {
@@ -612,9 +618,17 @@ h2 {
     left: 50%;
     transform: translate(-50%, -50%);
     padding: 20px;
-    z-index: 1000;
+    z-index: 2001;
     opacity: 0;
+    visibility: hidden;
     pointer-events: none;
+    transition: opacity 0.3s ease, visibility 0.3s ease;
+}
+
+#anuncio-1.is-visible {
+    opacity: 1;
+    visibility: visible;
+    pointer-events: auto;
 }
 
 #anuncio-1 img {
@@ -625,12 +639,13 @@ h2 {
 #equis {
     position: absolute;
     top: 8px;
-    right: 8px;
+    right: 2px;
     background: none;
     border: none;
     font-size: 1.5rem;
+    font-weight: 900;
     cursor: pointer;
-    color: #5f5f5f;
+    color: #9d9d9d;
 }
 
 #anuncio-1 .contenedor {

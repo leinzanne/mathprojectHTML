@@ -259,6 +259,16 @@
     /* pointer-events: none ensures the user clicks the div handler, not the svg itself */
     .ax3-point-reset svg { width: 11px; height: 11px; fill: currentColor; pointer-events: none; }
 
+    .ax3-point-reset-all {
+      appearance: none; background: transparent; border: 0; padding: 0;
+      color: rgba(77,184,255,0.55); cursor: pointer;
+      width: 18px; height: 18px;
+      display: flex; align-items: center; justify-content: center;
+      flex-shrink: 0; transition: color 0.15s; margin-left: auto;
+    }
+    .ax3-point-reset-all:hover { color: rgba(77,184,255,1); }
+    .ax3-point-reset-all svg { width: 14px; height: 14px; fill: currentColor; pointer-events: none; stroke: currentColor; stroke-width: 0.5; }
+
     /* GEM LINK BUTTON */
     .ax3-gem-btn {
       appearance: none;
@@ -269,7 +279,7 @@
       width: 16px; height: 16px;
       display: flex; align-items: center; justify-content: center;
       flex-shrink: 0;
-      margin-left: auto;
+      margin-left: 4px;
       transition: filter 0.15s;
     }
     .ax3-gem-btn svg { width: 12px; height: 12px; pointer-events: none; }
@@ -536,9 +546,8 @@
 
       const pt = { 
         letter, 
-        x: pX, 
-        y: pY, 
-        z: pZ
+        x: pX, y: pY, z: pZ,
+        _initX: pX, _initY: pY, _initZ: pZ
       };
       points.push(pt);
 
@@ -592,7 +601,24 @@
         tab.style.cursor = 'crosshair';
       });
 
-      nameRow.append(dot, document.createTextNode('Point ' + letter), gemBtn);
+      // Botón de reset general — resetea x, y, z a sus valores iniciales
+      const resetAllBtn = document.createElement('button');
+      resetAllBtn.className = 'ax3-point-reset-all';
+      resetAllBtn.type = 'button';
+      resetAllBtn.title = 'Reset all axes to initial values';
+      resetAllBtn.innerHTML = RESET_SVG;
+      resetAllBtn.addEventListener('mousedown', e => { e.stopPropagation(); e.preventDefault(); });
+      resetAllBtn.addEventListener('click', e => {
+        e.stopPropagation();
+        pt.x = pt._initX; pt.y = pt._initY; pt.z = pt._initZ;
+        fields.querySelectorAll('.ax3-point-field-input').forEach((inp, i) => {
+          const ax = ['x','y','z'][i];
+          inp.value = pt[ax].toFixed(2);
+        });
+      });
+
+      nameRow.append(dot, document.createTextNode('Point ' + letter), resetAllBtn, gemBtn);
+
       item.appendChild(nameRow);
 
       // Store references on pt for cross-item access
@@ -723,8 +749,8 @@
     const AXIS_LEN = 3;
     const axes = [
       { dir: vec3(1,0,0), neg: vec3(-1,0,0), color: '#ff4d6a', label: labelX },
-      { dir: vec3(0,1,0), neg: vec3(0,-1,0), color: '#4dffb4', label: labelY },
-      { dir: vec3(0,0,1), neg: vec3(0,0,-1), color: '#4db8ff', label: labelZ },
+      { dir: vec3(0,0,1), neg: vec3(0,0,-1), color: '#4dffb4', label: labelY },
+      { dir: vec3(0,1,0), neg: vec3(0,-1,0), color: '#4db8ff', label: labelZ },
     ];
 
     function resize() { canvas.width = shell.clientWidth; canvas.height = shell.clientHeight; }
@@ -815,8 +841,8 @@
 
       // ── Segments ──
       segments.forEach(seg => {
-        const pA = ws(vec3(seg.a.x, seg.a.y, seg.a.z));
-        const pB = ws(vec3(seg.b.x, seg.b.y, seg.b.z));
+        const pA = ws(vec3(seg.a.x, seg.a.z, seg.a.y));
+        const pB = ws(vec3(seg.b.x, seg.b.z, seg.b.y));
         if (!pA || !pB) return;
         ctx.save();
         ctx.beginPath(); ctx.moveTo(pA.sx, pA.sy); ctx.lineTo(pB.sx, pB.sy);
@@ -829,7 +855,7 @@
       // ── User points ──
       const linkedPts = new Set(segments.flatMap(s => [s.a, s.b]));
       points.forEach(pt => {
-        const p = ws(vec3(pt.x, pt.y, pt.z)); if (!p) return;
+        const p = ws(vec3(pt.x, pt.z, pt.y)); if (!p) return;
         const r = Math.max(2, Math.min(5, p.scale * 1.2));
         const isLinked = linkedPts.has(pt);
 

@@ -20,24 +20,29 @@ fadeUpElements.forEach((element) => {
   fadeUpObserver.observe(element);
 });
 
-const TIEMPO = 120000; // 2 minutos
+const TIEMPO = 60000; // 1 min en ms
 
-const popup   = document.getElementById('anuncio-1');
+const popup = document.getElementById('anuncio-1');
 const btnCerrar = document.getElementById('equis');
+let popupTimer = null;
+
+function schedulePopup() {
+  if (!popup) return;
+  clearTimeout(popupTimer);
+
+  popupTimer = setTimeout(() => {
+    popup.classList.add('is-visible');
+  }, TIEMPO);
+}
 
 // Mostrar después del tiempo definido
-setTimeout(() => {
-  if (!popup) return;
-
-  popup.style.opacity = '1';
-  popup.style.pointerEvents = 'auto';
-}, TIEMPO);
+schedulePopup();
 
 // Cerrar al hacer clic en el botón
 if (btnCerrar && popup) {
   btnCerrar.addEventListener('click', () => {
-    popup.style.opacity = '0';
-    popup.style.pointerEvents = 'none';
+    popup.classList.remove('is-visible');
+    schedulePopup();
   });
 }
 
